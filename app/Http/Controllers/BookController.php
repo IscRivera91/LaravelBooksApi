@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class BookController extends Controller
 {
@@ -16,7 +18,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        
+        $books = Book::all();
+        return $this->successResponse($books);
     }
 
     /**
@@ -28,6 +31,15 @@ class BookController extends Controller
     public function store(Request $request)
     {
         
+        $dataBook = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required|max:255',
+            'price' => 'required|numeric',
+            'author_id' => 'required|numeric'
+        ]);
+
+        $book = Book::create($dataBook);
+        return $this->successResponse($book,Response::HTTP_CREATED);
     }
 
     /**
@@ -36,9 +48,9 @@ class BookController extends Controller
      * @param $book
      * @return Illuminate\Http\Response
      */
-    public function show($book)
+    public function show(Book $book)
     {
-        
+        return $this->successResponse($book);
     }
 
     /**
